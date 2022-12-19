@@ -1,5 +1,6 @@
-package adeo.leroymerlin.cdp;
+package adeo.leroymerlin.cdp.repositories;
 
+import adeo.leroymerlin.cdp.entities.Event;
 import org.springframework.data.repository.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
