@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EventService {
@@ -27,8 +28,10 @@ public class EventService {
 
     public List<Event> getFilteredEvents(String query) {
         List<Event> events = eventRepository.findAllBy();
-        // Filter the events list in pure JAVA here
 
-        return events;
+        // Filter the events list in pure JAVA here
+        return events.stream().filter(
+                        event -> event.getBands().stream()
+                                .anyMatch(band -> band.getMembers().stream().anyMatch(member -> member.getName().toLowerCase().contains(query.toLowerCase())))).collect(Collectors.toList());
     }
 }
