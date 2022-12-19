@@ -1,0 +1,21 @@
+body {
+    font-family: 'Open Sans Condensed', sans-serif;
+}
+
+.page-header h1 {
+    font-family: 'Lobster', cursive;
+    color: #4c4c4c;
+}
+
+.event.media-heading {
+    font-family: 'Roboto', sans-serif;
+}
+
+.media-object {
+    width: 128px;
+}
+
+.btn {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
