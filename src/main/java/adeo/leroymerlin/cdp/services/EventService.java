@@ -34,4 +34,8 @@ public class EventService {
                         event -> event.getBands().stream()
                                 .anyMatch(band -> band.getMembers().stream().anyMatch(member -> member.getName().toLowerCase().contains(query.toLowerCase())))).collect(Collectors.toList());
     }
+
+    public void updateEvent(Long id, Event event){
+        eventRepository.updateEvent(id, event.getComment());
+    }
 }

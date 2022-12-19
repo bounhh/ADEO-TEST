@@ -17,4 +17,8 @@ public interface EventRepository extends Repository<Event, Long> {
     void delete(@Param("eventId") Long eventId);
 
     List<Event> findAllBy();
+
+    @Modifying
+    @Query("update Event e set e.comment=:comment where e.id=:eventId")
+    void updateEvent(@Param("eventId") Long id, @Param("comment") String comment);
 }
