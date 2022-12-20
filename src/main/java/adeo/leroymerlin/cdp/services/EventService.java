@@ -87,11 +87,7 @@ public class EventService {
     private Set<Band> getFiltredBand(Event event){
         List<Band> result = event.getBands().stream().map(band -> {
                     Set<Member> filtredMember = getFiltredMember(band);
-                    if(filtredMember.isEmpty()){
-                        band.setMembers(new HashSet<>());
-                    }else{
-                        band.setMembers(getFiltredMember(band));
-                    }
+                    band.setMembers(getFiltredMember(band));
                     return band;
                 }).filter(band -> band.getMembers().size() > 0).collect(Collectors.toList());
 
