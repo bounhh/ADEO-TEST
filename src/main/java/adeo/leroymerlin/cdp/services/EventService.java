@@ -1,17 +1,21 @@
 package adeo.leroymerlin.cdp.services;
 
+import adeo.leroymerlin.cdp.entities.Band;
+import adeo.leroymerlin.cdp.entities.Member;
 import adeo.leroymerlin.cdp.repositories.EventRepository;
 import adeo.leroymerlin.cdp.entities.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class EventService {
 
     private final EventRepository eventRepository;
+
+    private String _query;
 
     @Autowired
     public EventService(EventRepository eventRepository) {
@@ -27,15 +31,59 @@ public class EventService {
     }
 
     public List<Event> getFilteredEvents(String query) {
+        _query = query;
+
         List<Event> events = eventRepository.findAllBy();
 
-        // Filter the events list in pure JAVA here
-        return events.stream().filter(
-                        event -> event.getBands().stream()
-                                .anyMatch(band -> band.getMembers().stream().anyMatch(member -> member.getName().toLowerCase().contains(query.toLowerCase())))).collect(Collectors.toList());
+        return getFiltredEvents(events);
     }
 
     public void updateEvent(Long id, Event event){
         eventRepository.updateEvent(id, event.getComment());
+    }
+
+    /**
+     * Filter Events by band
+     * @param events
+     * @return
+     */
+    private List<Event> getFiltredEvents(List<Event> events){
+        List<Event> result = events.stream().map(event -> {
+            event.setBands(
+                    getFiltredBand(event)
+            );
+            return event;
+        }).filter(event -> event.getBands().size() > 0).collect(Collectors.toList());
+
+        return result;
+    }
+
+    /**
+     * Filter bands of Event
+     * @param event
+     * @return
+     */
+    private Set<Band> getFiltredBand(Event event){
+        List<Band> result = event.getBands().stream().map(band -> {
+                    Set<Member> filtredMember = getFiltredMember(band);
+                    if(filtredMember.isEmpty()){
+                        band.setMembers(new HashSet<>());
+                    }else{
+                        band.setMembers(getFiltredMember(band));
+                    }
+                    return band;
+                }).filter(band -> band.getMembers().size() > 0).collect(Collectors.toList());
+
+        return new HashSet<>(result);
+    }
+
+    /**
+     * Filter Members of band by query
+     * @param band
+     * @return
+     */
+    private Set<Member> getFiltredMember(Band band){
+        List<Member> result = band.getMembers().stream().filter(member -> member.getName().toLowerCase().contains(_query.toLowerCase())).collect(Collectors.toList());
+        return new HashSet<>(result);
     }
 }
