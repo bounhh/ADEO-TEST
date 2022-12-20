@@ -55,7 +55,28 @@ public class EventService {
             return event;
         }).filter(event -> event.getBands().size() > 0).collect(Collectors.toList());
 
-        return result;
+        // BONUS
+        List<Event> _result = result.stream().map(event -> {
+
+            String newTitle = event.getTitle().concat(" [".concat(String.valueOf(event.getBands().size())).concat("]"));
+
+            List<Band> bonusBands = event.getBands().stream().map(band -> {
+                // create new Ban object
+                Band bonusBand = new Band();
+
+                String newName = band.getName().concat(" [".concat(String.valueOf(band.getMembers().size())).concat("]"));
+
+                bonusBand.setName(newName);
+                bonusBand.setMembers(band.getMembers());
+                return bonusBand;
+            }).collect(Collectors.toList());
+
+            event.setTitle(newTitle);
+            event.setBands(new HashSet<>(bonusBands));
+            return event;
+        }).collect(Collectors.toList());
+
+        return _result;
     }
 
     /**
